@@ -6,3 +6,9 @@
     flex-wrap: wrap;
     flex-direction: row-reverse;
 }
+
+.editButtons {
+    display: flex; 
+    flex-direction: row;
+    justify-content: flex-end;
+}

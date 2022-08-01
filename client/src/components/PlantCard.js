@@ -10,6 +10,7 @@ import {
   CardMedia,
   Modal,
   TextField,
+  CardActionArea,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -27,9 +28,19 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import UploadImage from "../components/UploadImage";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import App from "../App";
+import { deletePlantCard } from "../App";
 
 const filter = createFilterOptions();
-const PlantCard = ({ userName, name, image, location, watered, id }) => {
+const PlantCard = ({
+  userName,
+  name,
+  image,
+  location,
+  watered,
+  id,
+  deletePlantCard,
+}) => {
   //Toggles the edit options for name and location
   const [editing, setEditing] = useState(false);
 
@@ -43,7 +54,9 @@ const PlantCard = ({ userName, name, image, location, watered, id }) => {
   //Toggles the light info modal
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const [imageButton, showImageButton] = useState(false);
   const PATH = useSelector((state) => state.user.value.imagePath);
@@ -167,6 +180,10 @@ const PlantCard = ({ userName, name, image, location, watered, id }) => {
 
   //style for modal
   const style = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -227,174 +244,75 @@ const PlantCard = ({ userName, name, image, location, watered, id }) => {
           boxShadow: 4,
         }}
       >
-        {editing ? (
-          <Stack spacing={1} sx={{ width: 275 }}>
-            <Autocomplete
-              id="free-solo-demo"
-              freeSolo
-              options={plantData.map((option) => option.name)}
-              renderInput={(params) => <TextField {...params} />}
-              value={plantName}
-              inputValue={plantName}
-              onInputChange={(event, newInputValue) => {
-                setPlantName(newInputValue);
-                // editInfo(id, newInputValue)
-              }}
-              onKeyDown={(event, newInputValue) => {
-                if (event.key === "Enter") {
-                  // Prevent's default 'Enter' behavior.
-                  editInfo(id, plantName);
-                  editLocation(id, valueLocation);
-                  setEditing(false);
-                  // your handler code
-                }
-              }}
-            />
-          </Stack>
-        ) : (
-          <CardHeader title={plantName} />
-        )}
+        <CardActionArea
+          onClick={() =>
+            navigate(`/plantpage/${id}`, { userName: userName, id: id })
+          }
+        >
+          <CardHeader
+            sx={{ backgroundColor: "#fff" }}
+            titleTypographyProps={{ fontWeight: 300 }}
+            title={plantName}
+          />
 
-        <CardMedia
-          component="img"
-          alt="user plant"
-          height="280"
-          sx={{ width: 250, boxShadow: 2 }}
-          image={imagePath}
-        />
+          <CardMedia
+            onClick={() => navigate(`/plantpage/${id}`)}
+            component="img"
+            alt="user plant"
+            height="280"
+            sx={{ marginRight: 5, width: "inherit", boxShadow: 2 }}
+            image={imagePath}
+          />
 
-        <CardContent>
-          {editing ? (
-            <Autocomplete
-              value={valueLocation}
-              onChange={(event, newValue) => {
-                if (typeof newValue === "string") {
-                  setValueLocation(newValue);
-                  console.log(valueLocation);
-                } else if (newValue && newValue.inputValue) {
-                  // Create a new value from the user input
-                  setValueLocation(newValue.inputValue);
-                  console.log(valueLocation);
-                } else {
-                  setValueLocation(newValue);
-                  console.log(valueLocation);
-                }
-              }}
-              filterOptions={(options, params) => {
-                const filtered = filter(options, params);
-
-                const { inputValue } = params;
-                // Suggest the creation of a new value
-                const isExisting = options.some(
-                  (option) => inputValue === option.title
-                );
-                if (inputValue !== "" && !isExisting) {
-                  filtered.push({
-                    inputValue,
-                    title: `Add "${inputValue}"`,
-                  });
-                }
-
-                return filtered;
-              }}
-              selectOnFocus
-              clearOnBlur
-              handleHomeEndKeys
-              id="free-solo-with-text-demo"
-              options={options}
-              getOptionLabel={(option) => {
-                // Value selected with enter, right from the input
-                if (typeof option === "string") {
-                  return option;
-                }
-                // Add "xxx" option created dynamically
-                if (option.inputValue) {
-                  return option.inputValue;
-                }
-                // Regular option
-                return option.location;
-              }}
-              renderOption={(props, option) => (
-                <li {...props}>{option.location}</li>
-              )}
-              sx={{ width: 270 }}
-              freeSolo
-              renderInput={(params) => (
-                <TextField {...params} label="Location" value="test" />
-              )}
-            />
-          ) : (
+          <CardContent>
             <Typography>
               Location: {valueLocation}
               <br />
             </Typography>
-          )}
-          <Typography>Last watered: {waterDate}</Typography>
-          {/* <IconButton variant="contained" color="primary"><OpacityIcon /></IconButton> */}
-        </CardContent>
-
+            <Typography>Last watered: {waterDate}</Typography>
+            {/* <IconButton variant="contained" color="primary"><OpacityIcon /></IconButton> */}
+          </CardContent>
+        </CardActionArea>
         {/* <Button size="small" variant="contained" color="primary" value={plants.name} onClick={lightInfo}>?</Button> */}
         <CardActions>
           {/* <Button onClick={() => { navigate(`/plantpage/${id}`) }}>Info</Button> */}
-          <IconButton
-            value={plantName}
-            onClick={() => lightInfo(plantName)}
-            color="primary"
-          >
-            <DeleteIcon />
-          </IconButton>
-          <IconButton
+
+          {/* <IconButton
             value={plantName}
             onClick={() => {
               navigate(`/plantpage/${id}`);
             }}
             color="primary"
-            aria-label="light info"
+            aria-label="open plant page"
           >
             <InfoIcon />
-          </IconButton>
-          {!editing ? (
-            <IconButton
-              onClick={() => setEditing(!editing)}
-              color="primary"
-              aria-label="add to shopping cart"
-            >
-              <EditIcon />
-            </IconButton>
-          ) : (
-            <div>
-              <IconButton
-                onClick={() => setEditing(!editing)}
-                color="error"
-                aria-label="add to shopping cart"
-              >
-                <CancelIcon />
-              </IconButton>
-              <IconButton
-                onClick={() => editInfo(id, plantName, valueLocation)}
-                color="success"
-                aria-label="add to shopping cart"
-              >
-                <CheckCircleIcon />
-              </IconButton>
-            </div>
-          )}
+          </IconButton> */}
 
           <IconButton
             onClick={() => updateWatered(id)}
             color="primary"
-            aria-label="add to shopping cart"
+            aria-label="update watering"
           >
             <OpacityIcon />
           </IconButton>
           {imageButton && (
-            <IconButton
-              onClick={handleOpenEdit}
-              color="success"
-              aria-label="uplaod new image"
-            >
-              <AddPhotoAlternateIcon />
-            </IconButton>
+            <>
+              <IconButton
+                onClick={handleOpenEdit}
+                color="success"
+                aria-label="uplaod new image"
+              >
+                <AddPhotoAlternateIcon />
+              </IconButton>
+
+              <IconButton
+                value={plantName}
+                onClick={() => lightInfo(plantName)}
+                color="primary"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </>
           )}
         </CardActions>
       </Card>
@@ -409,16 +327,20 @@ const PlantCard = ({ userName, name, image, location, watered, id }) => {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {plantName}
           </Typography>
-          <UploadImage onChange={() => setImagePath(PATH)} buttonType="icon" />
-          <Button onClick={() => editImage(id, PATH)}>Save</Button>
-          <Button onClick={() => handleCloseEdit(false)}>Cancel</Button>
+          <UploadImage onChange={() => setImagePath(PATH)} buttonType="text" />
+          <Button onClick={() => editImage(id, PATH)}>
+            <Typography color="green">Save</Typography>
+          </Button>
+          <Button onClick={() => handleCloseEdit(false)}>
+            <Typography color="red">Cancel</Typography>
+          </Button>
         </Box>
       </Modal>
 
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
+        aria-labelledby="confirm-deletion"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
@@ -428,7 +350,10 @@ const PlantCard = ({ userName, name, image, location, watered, id }) => {
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Are you sure you want to delete this plant?
           </Typography>
-          <Button onClick={deletePlant}>Confirm</Button>
+
+          <Button onClick={deletePlantCard} value={id}>
+            Confirm
+          </Button>
           <Button onClick={handleClose}>Cancel</Button>
         </Box>
       </Modal>

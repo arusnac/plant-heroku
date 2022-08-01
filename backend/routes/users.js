@@ -9,8 +9,6 @@ router.get("/", (req, res) => {
       res.json(err);
     } else {
       res.json(result);
-      console.log(param);
-      console.log(result);
     }
   });
 });
@@ -24,6 +22,16 @@ router.get("/plant", (req, res) => {
   });
 });
 
+router.get("/notes", (req, res) => {
+  const plantId = req.body.id;
+  const user = req.body.id;
+
+  const result = UserModel.findOne({ username: param }).then((doc) => {
+    let plant = doc.plants.id(plantId);
+    res.json(plant.notes);
+  });
+});
+
 router.post("/new", async (req, res) => {
   const user = req.body;
   const newUser = new UserModel(user);
@@ -33,7 +41,6 @@ router.post("/new", async (req, res) => {
 });
 
 router.post("/update", async (req, res) => {
-  // console.log(req.body);
   let param = req.query.username;
   const result = await UserModel.findOne({ userName: param }).then((doc) => {
     doc.plants.push(req.body);
@@ -41,30 +48,24 @@ router.post("/update", async (req, res) => {
     res.json(doc.plants.at(-1));
   });
 
-  // console.log(res.json(result.upsertedId));
-
   res.json(result);
 });
 
 router.post("/water", async (req, res) => {
-  console.log(req.body);
   let param = req.query.username;
   const watered = req.body.watered;
   const plantId = req.body.id;
-  console.log(req.body);
 
   const result = await UserModel.findOne({ username: param }).then((doc) => {
-    console.log(doc);
     let plant = doc.plants.id(plantId);
-    console.log(plant.id);
     plant.watered = watered;
     doc.save();
   });
   res.json(result);
 });
 
+//Edit name and/or location
 router.post("/edit", async (req, res) => {
-  console.log(req.body);
   let param = req.query.username;
   const name = req.body.name;
   const location = req.body.location;
@@ -72,9 +73,7 @@ router.post("/edit", async (req, res) => {
   console.log(req.body);
 
   const result = await UserModel.findOne({ username: param }).then((doc) => {
-    console.log(doc);
     let plant = doc.plants.id(plantId);
-    console.log(plant.id);
     plant.name = name;
     plant.location = location;
     doc.save();
@@ -82,17 +81,32 @@ router.post("/edit", async (req, res) => {
   res.json(result);
 });
 
-router.post("/editLocation", async (req, res) => {
-  console.log(req.body);
+//Adds note to the plant
+router.post("/addNote", async (req, res) => {
   let param = req.query.username;
-  const location = req.body.location;
+  const noteBody = req.body.noteBody;
+  const noteTitle = req.body.noteTitle;
   const plantId = req.body.id;
   console.log(req.body);
 
   const result = await UserModel.findOne({ username: param }).then((doc) => {
-    console.log(doc);
     let plant = doc.plants.id(plantId);
-    console.log(plant.id);
+
+    //doc.plants.id(plantId).notes.push({ noteTitle, noteBody });
+    plant.notes.push({ noteTitle, noteBody });
+    doc.save();
+  });
+
+  res.json(result);
+});
+
+router.post("/editLocation", async (req, res) => {
+  let param = req.query.username;
+  const location = req.body.location;
+  const plantId = req.body.id;
+
+  const result = await UserModel.findOne({ username: param }).then((doc) => {
+    let plant = doc.plants.id(plantId);
     plant.location = location;
     doc.save();
   });
@@ -100,16 +114,12 @@ router.post("/editLocation", async (req, res) => {
 });
 
 router.post("/editImage", async (req, res) => {
-  console.log(req.body);
   let param = req.query.username;
   const imagePath = req.body.imagePath;
   const plantId = req.body.id;
-  console.log(req.body);
 
   const result = await UserModel.findOne({ username: param }).then((doc) => {
-    // console.log(doc)
     let plant = doc.plants.id(plantId);
-    console.log(plant.id);
     plant.image = imagePath;
     doc.save();
   });

@@ -1,17 +1,25 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
-    userName: {
-        type: String,
-        required: true,
+  userName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+  },
+  plants: [
+    {
+      name: String,
+      location: String,
+      watered: String,
+      image: String,
+      notes: Array,
     },
-    email: {
-        type: String,
-    },
-    plants: [{ name: String, location: String, watered: String, image: String }]
+  ],
 });
 
-const UserModel = mongoose.model('users', UserSchema);
+const UserModel = mongoose.model("users", UserSchema);
 export default UserModel;
 
 // const PlantSchema = new mongoose.Schema({

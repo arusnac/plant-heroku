@@ -14,13 +14,26 @@ import Nav from './components/Nav'
 import { Navigate } from "react-router-dom";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import IconButton from '@mui/material/IconButton';
+import Footer from './components/Footer'
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 const App = () => {
   const [plantList, setPlantList] = useState([])
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
+  
+  //Pass the state of the delete confirmation window to the plant card in order to close it
+  //After deletion
+  const [confirmationWindow, setConfirmationWindow] = useState(false);
 
-  const [currentUser, setCurrentUser] = useState('')
+  //Alert for when plants are added or deleted, plus the style of the message
+  const [alertMessage, setAlertMessage] = useState('');
+  const [severity, setSeverity] = useState('');
+
+  const [currentUser, setCurrentUser] = useState('');
 
   const { getUser } = useContext(AccountContext);
 
@@ -54,7 +67,31 @@ const App = () => {
       console.log('error')
     }
 
+    console.log(plantList[0])
+
   }, [])
+
+  const deletePlantCard = (e) => {
+    Axios.post(
+      "http://localhost:5000/user/delete",
+      { id: e.target.value },
+      {
+        params: {
+          username: currentUser,
+        },
+      }
+    ).then((response) => {
+      handleClick('Plant removed!', 'warning')
+    });
+    console.log(plantList.map(x => x._id).indexOf(e.target.value));
+    const index = plantList.map(x => x._id).indexOf(e.target.value);
+    if(index !== -1)
+    {
+    setPlantList([...plantList.slice(0,index), 
+      ...plantList.slice(index + 1, plantList.length)]);    
+      setConfirmationWindow(false);
+    }
+  }
 
   //Save the userstatus to local storage to maintain the app on refresh
   useEffect(() => {
@@ -82,7 +119,9 @@ const App = () => {
   //Handles the alert when plant is added
   const [openSnack, setOpenSnack] = useState(false);
 
-  const handleClick = () => {
+  const handleClick = (message, sev) => {
+    setAlertMessage(message);
+    setSeverity(sev);
     setOpenSnack(true);
   };
 
@@ -104,10 +143,12 @@ const App = () => {
     }).then((response) => {
       setPlantList([...plantList, { name, location, watered, image: imagePath, id: response._id }])
       handleClose();
-      handleClick();
+      handleClick('Plant Added!', 'success');
     });
 
   };
+
+
 
   return (
     <>
@@ -122,8 +163,8 @@ const App = () => {
                   open={openSnack}
                   autoHideDuration={6000}
                   onClose={handleSnackClose}>
-                  <Alert onClose={handleSnackClose} severity="success" sx={{ width: '100%' }}>
-                    Plant added!
+                  <Alert onClose={handleSnackClose} severity={severity} sx={{ width: '100%' }}>
+                    {alertMessage}
                   </Alert>
                 </Snackbar>
                 {!open &&
@@ -159,16 +200,19 @@ const App = () => {
 
                 <div className={styles.plantContainer}>
                   {plantList.map((plants) => {
-                    return <PlantCard key={plants._id} id={plants._id} name={plants.name} image={plants.image} location={plants.location} watered={plants.watered} userName={user.username} />
+                    return <PlantCard open={confirmationWindow} deletePlantCard={deletePlantCard} key={plants._id} id={plants._id} name={plants.name} image={plants.image} location={plants.location} watered={plants.watered} userName={user.username} />
                   })}
 
                 </div>
 
               </div >
+
             </Container >
+           < Footer/>
           </div >
       }
     </>
   );
 }
+
 export default App;
