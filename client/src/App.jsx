@@ -74,16 +74,10 @@ const App = () => {
   const deletePlantCard = (e) => {
     Axios.post(
       "http://localhost:5000/user/delete",
-      { id: e.target.value },
-      {
-        params: {
-          username: currentUser,
-        },
-      }
+      { id: e.target.value, username: currentUser, toDelete: 'plant' },
     ).then((response) => {
       handleClick('Plant removed!', 'warning')
     });
-    console.log(plantList.map(x => x._id).indexOf(e.target.value));
     const index = plantList.map(x => x._id).indexOf(e.target.value);
     if(index !== -1)
     {

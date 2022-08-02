@@ -4,6 +4,7 @@ import styles from "../App.module.css";
 import { AccountContext } from "./Account";
 import Axios from "axios";
 import Nav from "./Nav";
+import Note from "./Note";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -37,7 +38,6 @@ const PlantPage = () => {
   //States for the user added notes
   const [titleValue, setTitleValue] = useState("");
   const [noteBodyValue, setNoteBodyValue] = useState("");
-  const [deleteNote, setDeleteNote] = useState(false);
 
   //Set state to the specific plant loaded
   const [plant, setPlant] = useState({});
@@ -58,6 +58,9 @@ const PlantPage = () => {
     setOpen(false);
   };
 
+  //Close the note deletion window after confimration
+  const [confimationWindow, setConfirmationWindow] = useState(false);
+
   const theme = useTheme();
   //const username = useSelector((state) => state.user.value.username);
   //const userName = useLocation();
@@ -77,19 +80,18 @@ const PlantPage = () => {
       setPlant(response.data);
       setPlantName(response.data.name);
       setNoteList(response.data.notes);
+      setValueLocation(response.data.location);
     });
   }, []);
 
   const saveNote = (noteTitle, noteBody) => {
-    Axios.post(
-      "http://localhost:5000/user/addNote",
-      { id: plant._id, noteTitle, noteBody },
-      {
-        params: {
-          username: username,
-        },
-      }
-    ).then((response) => {
+    Axios.post("http://localhost:5000/user/note", {
+      id: plant._id,
+      noteTitle,
+      noteBody,
+      username,
+      toDo: "add",
+    }).then((response) => {
       if (noteList)
         setNoteList((noteList) => [...noteList, { noteTitle, noteBody }]);
       else setNoteList([{ noteTitle, noteBody }]);
@@ -122,6 +124,30 @@ const PlantPage = () => {
 
   const handleChange = (e) => {
     console.log(e);
+  };
+
+  const deleteNoteConfirmation = (idx) => {
+    Axios.post("http://localhost:5000/user/delete", {
+      username,
+      idx,
+      id: plant._id,
+      toDelete: "note",
+    }).then((response) => {
+      setConfirmationWindow(false);
+    });
+    console.log(`LIST: ${noteList}`);
+    if (idx !== -1) {
+      console.log(`INDEX: ${idx}`);
+      setNoteList([
+        ...noteList.slice(0, idx),
+        ...noteList.slice(idx + 1, noteList.length),
+      ]);
+    }
+
+    // setPlantList([
+    //   ...plantList.slice(0, index),
+    //   ...plantList.slice(index + 1, plantList.length),
+    // ]);
   };
 
   //style for modal
@@ -282,43 +308,42 @@ const PlantPage = () => {
                 </>
               ) : (
                 <>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {plantName}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "rows",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography gutterBottom variant="h5" component="div">
+                      {plantName}
+                    </Typography>
+                    {!editing && (
+                      <IconButton onClick={() => setEditing(true)}>
+                        <EditIcon />
+                      </IconButton>
+                    )}
+                  </Box>
+                  <Typography
+                    fontWeight={700}
+                    variant="body1"
+                    color="text.primary"
+                  >
+                    Location
                   </Typography>
                   <Typography variant="body1" color="text.primary">
-                    Location: {valueLocation}
+                    {valueLocation}
                   </Typography>
                 </>
               )}
-
-              <Typography variant="body1" color="text.primary">
-                Watered: {plant.watered}
-              </Typography>
-
-              {
-                //Display the user added notes
-                noteList.map((note, idx) => {
-                  return (
-                    <Typography
-                      onMouseEnter={() => setDeleteNote(true)}
-                      onMouseLeave={() => setDeleteNote(false)}
-                      key={idx}
-                      variant="body1"
-                      color="text.primary"
-                    >
-                      {deleteNote && <p>x</p>} {note.noteTitle}: {note.noteBody}
-                    </Typography>
-                  );
-                })
-              }
-            </CardContent>
-
-            <CardActions sx={{ justifyContent: "space-between" }}>
-              <Button onClick={handleOpen} size="small" color="primary">
-                Add notes
-              </Button>
               {editing && (
-                <div>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "rows",
+                    justifyContent: "flex-end",
+                  }}
+                >
                   <IconButton
                     onClick={() => setEditing(!editing)}
                     color="error"
@@ -333,13 +358,49 @@ const PlantPage = () => {
                   >
                     <CheckCircleIcon />
                   </IconButton>
-                </div>
+                </Box>
               )}
-              {!editing && (
-                <IconButton onClick={() => setEditing(true)}>
-                  <EditIcon />
-                </IconButton>
+              <Typography fontWeight={700} variant="body1" color="text.primary">
+                Watered
+              </Typography>
+              <Typography gutterBottom variant="body1" color="text.primary">
+                {plant.watered}
+              </Typography>
+              {noteList && (
+                <Typography
+                  fontWeight={700}
+                  gutterBottom
+                  variant="body1"
+                  color="text.primary"
+                  sx={{ textDecoration: "underline" }}
+                >
+                  Notes
+                </Typography>
               )}
+              {
+                //Display the user added notes
+                noteList.map((note, index) => {
+                  const key = Math.random();
+                  return (
+                    <Note
+                      key={key}
+                      title={note.noteTitle}
+                      body={note.noteBody}
+                      idx={index}
+                      plantId={plant._id}
+                      username={username.username}
+                      deleteNoteConfirmation={deleteNoteConfirmation}
+                      saveNote={saveNote}
+                    />
+                  );
+                })
+              }
+            </CardContent>
+
+            <CardActions sx={{ justifyContent: "space-between" }}>
+              <Button onClick={handleOpen} size="small" color="primary">
+                Add notes
+              </Button>
             </CardActions>
           </Card>
         </Box>
@@ -368,7 +429,7 @@ const PlantPage = () => {
           <TextField
             id="outlined-textarea"
             label="Title (optional)"
-            placeholder="Placeholder"
+            placeholder="E.g. Watering Frequency"
             multiline
             onChange={(newValue) => {
               setTitleValue(newValue.target.value);
@@ -377,6 +438,7 @@ const PlantPage = () => {
           <TextField
             id="outlined-multiline-static"
             label="Notes"
+            placeholder="E.g. Once a week."
             multiline
             rows={4}
             onChange={(newValue) => {

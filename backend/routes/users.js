@@ -13,6 +13,7 @@ router.get("/", (req, res) => {
   });
 });
 
+//return all the plants for this user
 router.get("/plant", (req, res) => {
   let param = req.query.username;
   let plantId = req.query.id;
@@ -22,6 +23,7 @@ router.get("/plant", (req, res) => {
   });
 });
 
+//Add a new note to the plant notes array
 router.get("/notes", (req, res) => {
   const plantId = req.body.id;
   const user = req.body.id;
@@ -81,20 +83,28 @@ router.post("/edit", async (req, res) => {
   res.json(result);
 });
 
-//Adds note to the plant
-router.post("/addNote", async (req, res) => {
-  let param = req.query.username;
+//Adds or edits note related to the plant
+router.post("/note", async (req, res) => {
+  const username = req.body.username;
   const noteBody = req.body.noteBody;
   const noteTitle = req.body.noteTitle;
   const plantId = req.body.id;
+  const toDo = req.body.toDo;
+  const idx = req.body.idx;
   console.log(req.body);
 
-  const result = await UserModel.findOne({ username: param }).then((doc) => {
+  const result = await UserModel.findOne({ username: username }).then((doc) => {
     let plant = doc.plants.id(plantId);
-
-    //doc.plants.id(plantId).notes.push({ noteTitle, noteBody });
-    plant.notes.push({ noteTitle, noteBody });
-    doc.save();
+    console.log(`plant: ${plant}`);
+    if (toDo === "add") {
+      plant.notes.push({ noteTitle, noteBody });
+      doc.save();
+    } else if (toDo === "update") {
+      doc.plants.id(plantId).notes[idx].noteTitle = noteTitle;
+      doc.plants.id(plantId).notes[idx].noteBody = noteBody;
+      console.log(`UPDATED: ${plant.notes[idx].noteTitle}`);
+      doc.save();
+    }
   });
 
   res.json(result);
@@ -127,15 +137,28 @@ router.post("/editImage", async (req, res) => {
 });
 
 router.post("/delete", async (req, res) => {
-  let param = req.query.username;
+  const param = req.body.username;
   const plantId = req.body.id;
+  const toDelete = req.body.toDelete;
+  const noteIndex = req.body.idx;
 
-  const result = await UserModel.findOne({ username: param }).then((doc) => {
-    const index = doc.plants.findIndex((element) => element.id === plantId);
-    doc.plants.splice(index, 1);
-    doc.save();
-  });
-  res.json(result);
+  console.log(noteIndex);
+
+  if (toDelete === "plant") {
+    const result = await UserModel.findOne({ username: param }).then((doc) => {
+      const index = doc.plants.findIndex((element) => element.id === plantId);
+      doc.plants.splice(index, 1);
+      doc.save();
+    });
+    res.json(result);
+  } else if (toDelete === "note") {
+    const result = await UserModel.findOne({ username: param }).then((doc) => {
+      // const index = doc.plants.findIndex((element) => element.id === plantId);
+      doc.plants.id(plantId).notes.splice(noteIndex, 1);
+      doc.save();
+    });
+    res.json(result);
+  }
 });
 
 export default router;

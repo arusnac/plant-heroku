@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
       location: String,
       watered: String,
       image: String,
-      notes: Array,
+      notes: [{ noteTitle: String, noteBody: String }],
     },
   ],
 });

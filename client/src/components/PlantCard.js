@@ -347,7 +347,7 @@ const PlantCard = ({
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {plantName}
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+          <Typography id="modal-modal-description" sx={{ mt: 2, mb: 4 }}>
             Are you sure you want to delete this plant?
           </Typography>
 
