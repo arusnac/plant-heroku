@@ -86,14 +86,13 @@ const Note = ({
           color="text.primary"
           sx={{ paddingRight: "5px", fontWeight: 700 }}
         >
-          {titleValue}:{" "}
+          {titleValue}:
         </Typography>
         <Typography
           color="text.secondary"
           variant="body1"
           sx={{ paddingRight: "20px" }}
         >
-          {" "}
           {noteBodyValue}
         </Typography>
         {deleteNote && (
@@ -120,9 +119,6 @@ const Note = ({
         aria-describedby="modal-modal-description"
       >
         <Box sx={styleModal}>
-          {/* <Typography id="modal-modal-title" variant="h6" component="h2">
-            {idx}
-          </Typography> */}
           <Typography id="modal-modal-description" sx={{ mt: 2, mb: 4 }}>
             Edit your note.
           </Typography>
@@ -159,9 +155,6 @@ const Note = ({
         aria-describedby="modal-modal-description"
       >
         <Box sx={styleModal}>
-          {/* <Typography id="modal-modal-title" variant="h6" component="h2">
-            {idx}
-          </Typography> */}
           <Typography id="modal-modal-description" sx={{ mt: 2, mb: 4 }}>
             Are you sure you want to delete this note?
           </Typography>

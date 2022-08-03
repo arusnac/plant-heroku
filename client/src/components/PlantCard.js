@@ -275,19 +275,6 @@ const PlantCard = ({
         </CardActionArea>
         {/* <Button size="small" variant="contained" color="primary" value={plants.name} onClick={lightInfo}>?</Button> */}
         <CardActions>
-          {/* <Button onClick={() => { navigate(`/plantpage/${id}`) }}>Info</Button> */}
-
-          {/* <IconButton
-            value={plantName}
-            onClick={() => {
-              navigate(`/plantpage/${id}`);
-            }}
-            color="primary"
-            aria-label="open plant page"
-          >
-            <InfoIcon />
-          </IconButton> */}
-
           <IconButton
             onClick={() => updateWatered(id)}
             color="primary"

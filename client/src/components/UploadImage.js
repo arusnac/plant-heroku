@@ -80,7 +80,7 @@ const UploadImageToS3WithReactS3 = ({ buttonType }) => {
           </IconButton>
         ) : (
           <Button sx={{ margin: 5 }} variant="contained" component="span">
-            Upload
+            Upload an image
           </Button>
         )}
       </label>

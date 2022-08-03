@@ -61,10 +61,6 @@ const PlantPage = () => {
   //Close the note deletion window after confimration
   const [confimationWindow, setConfirmationWindow] = useState(false);
 
-  const theme = useTheme();
-  //const username = useSelector((state) => state.user.value.username);
-  //const userName = useLocation();
-
   let params = useParams();
   const URL = "http://localhost:5000/user/plant";
   const { getUser } = useContext(AccountContext);
@@ -122,10 +118,7 @@ const PlantPage = () => {
     });
   };
 
-  const handleChange = (e) => {
-    console.log(e);
-  };
-
+  //After confimation on the note deletion update noteList
   const deleteNoteConfirmation = (idx) => {
     Axios.post("http://localhost:5000/user/delete", {
       username,
@@ -135,19 +128,12 @@ const PlantPage = () => {
     }).then((response) => {
       setConfirmationWindow(false);
     });
-    console.log(`LIST: ${noteList}`);
     if (idx !== -1) {
-      console.log(`INDEX: ${idx}`);
       setNoteList([
         ...noteList.slice(0, idx),
         ...noteList.slice(idx + 1, noteList.length),
       ]);
     }
-
-    // setPlantList([
-    //   ...plantList.slice(0, index),
-    //   ...plantList.slice(index + 1, plantList.length),
-    // ]);
   };
 
   //style for modal
@@ -215,8 +201,17 @@ const PlantPage = () => {
           }}
         >
           <Card sx={{ maxWidth: { xs: 345, md: 650 } }}>
-            <CardMedia component="img" image={plant.image} alt="green iguana" />
+            <CardMedia
+              component="img"
+              image={
+                plant.image !== "test"
+                  ? plant.image
+                  : "https://dummyimage.com/345x345/696969/696969"
+              }
+              alt={plant.image}
+            />
             <CardContent>
+              {/* Components to display while editing the name and location */}
               {editing ? (
                 <>
                   <Stack spacing={2}>
@@ -336,6 +331,7 @@ const PlantPage = () => {
                   </Typography>
                 </>
               )}
+              {/* While editing show the save and cancel buttons */}
               {editing && (
                 <Box
                   sx={{
@@ -366,7 +362,8 @@ const PlantPage = () => {
               <Typography gutterBottom variant="body1" color="text.primary">
                 {plant.watered}
               </Typography>
-              {noteList && (
+              {/* If noteList contains entries display the title */}
+              {noteList.length > 0 && (
                 <Typography
                   fontWeight={700}
                   gutterBottom

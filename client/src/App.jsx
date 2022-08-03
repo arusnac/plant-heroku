@@ -8,7 +8,7 @@ import styles from './App.module.css'
 import UploadImage from './components/UploadImage'
 import { toggleStatus, setUsername } from './redux/UserSlice';
 import Button from '@mui/material/Button';
-import { Stack, Box, Modal, Snackbar, Alert } from '@mui/material'
+import { Stack, Box, Modal, Snackbar, Alert, Typography  } from '@mui/material'
 import PlantCard from './components/PlantCard'
 import Nav from './components/Nav'
 import { Navigate } from "react-router-dom";
@@ -24,6 +24,8 @@ const App = () => {
   const [plantList, setPlantList] = useState([])
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
+  const [waterDate, setWaterDate] = useState('');
+  const [valueDate, setValueDate] = useState('');
   
   //Pass the state of the delete confirmation window to the plant card in order to close it
   //After deletion
@@ -45,6 +47,7 @@ const App = () => {
 
   //If the user is logged in get their plant collection on initial loading 
   useEffect(() => {
+    const today = new Date()
     //get the userstate from local storage
     dispatch(toggleStatus(window.localStorage.getItem('userStatus')));
     console.log('here ' + userStatus)
@@ -129,9 +132,11 @@ const App = () => {
   //Add plant to the user collection in mongoDB then update the list to 
   //rerender the the plant cards
   const updatePlant = () => {
-    let watered = new Date().toLocaleDateString();
+    if(!name.length > 0 || !location.length >0) return alert('Please fill all requried fields.')
+    else {
+    let watered = waterDate.length > 0 ? waterDate : new Date().toLocaleDateString();
     let imagePath = PATH.imagePath;
-    Axios.post(URL + 'update', { name: name, location: location, watered: watered, image: imagePath }, {
+    Axios.post(URL + 'update', { name, location, watered: watered, image: imagePath }, {
       params:
         { username: user.username }
     }).then((response) => {
@@ -139,8 +144,17 @@ const App = () => {
       handleClose();
       handleClick('Plant Added!', 'success');
     });
-
+  }
   };
+
+  const formatDate = (date) => {
+    setValueDate(date);
+    console.log(date)
+    const [year, month, day] = date.split('-')
+    setWaterDate(`${month}/${day}/${year}`)
+    
+    
+  }
 
 
 
@@ -179,13 +193,21 @@ const App = () => {
                       direction="column"
                       justifyContent="center"
                       alignItems="center"
-                      spacing={2}
+                      spacing={1}
                     >
 
                       <UploadImage />
 
-                      <input type='text' placeholder='name' onChange={(event) => { setName(event.target.value) }} />
-                      <input type='text' placeholder='location' onChange={(event) => { setLocation(event.target.value) }} />
+                      <input type='text' placeholder='name (required)' onChange={(event) => { setName(event.target.value) }} />
+                      <input type='text' placeholder='location (required)' onChange={(event) => { setLocation(event.target.value) }} />
+                      <Typography variant='body1' color='text.primary'>Last Watered</Typography>
+                      <Typography variant='body2' color='text.secondary'>If left blank, today's date will be used</Typography>
+                     <input type="date" id="start" name="trip-start"
+                        min="2022-01-01" 
+                        max="2022-12-31" 
+                        onChange={(e)=>{formatDate(e.target.value)}}>      
+                      </input>
+                      {/* <Button onClick={(event)=>{showDate()}}>test</Button> */}
                       <Button variant="contained" color="success" onClick={updatePlant}>Add</Button>
                       <Button variant="contained" color="error" onClick={handleClose}>Cancel</Button>
                     </Stack>
