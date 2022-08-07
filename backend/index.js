@@ -8,12 +8,18 @@ import multer from "multer";
 import fs from "fs";
 import util from "util";
 import { uploadFile, getFileStream } from "./s3.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const unlinkFile = util.promisify(fs.unlink);
+const __filename = fileURLToPath(import.meta.url);
 
+const __dirname = path.dirname(__filename);
 const app = express();
+const buildPath = path.join(__dirname, "..", "build");
+app.use(express.static(buildPath));
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 
 const upload = multer({ dest: "uploads/" });
 
