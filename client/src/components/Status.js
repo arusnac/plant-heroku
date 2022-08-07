@@ -11,7 +11,7 @@ const Status = () => {
   useEffect(() => {
     getSession().then((session) => {
       setUsername(session.accessToken.payload.username);
-      // console.log('session: ', session.accessToken.payload.username);
+
       setStatus(true);
     });
   }, [getSession]);

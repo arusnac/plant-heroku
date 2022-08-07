@@ -36,7 +36,6 @@ const Nav = () => {
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-    console.log(event.currentTarget);
   };
 
   const handleMenuItem = (selectedSetting) => {

@@ -239,7 +239,6 @@ const PlantCard = ({
       >
         <CardActionArea
           onClick={() => {
-            console.log(id);
             navigate(`/plantpage/${id}`, { userName: userName, id: id });
           }}
         >

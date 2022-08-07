@@ -40,8 +40,6 @@ const SignUp = () => {
     const email = data.get("email");
     const password = data.get("password");
     const username = data.get("userName");
-    console.log(email);
-    const att = "email";
 
     UserPool.signUp(
       username,
@@ -52,7 +50,6 @@ const SignUp = () => {
         if (err) {
           console.log(err);
         }
-        console.log(data);
         Axios.post(BASE_URL + "/user/new", {
           userName: username,
           email: email,

@@ -36,7 +36,6 @@ const UserAccount = () => {
   const user = getUser();
 
   const change = () => {
-    console.log(oldPass, newPass, newPassRetype);
     if (newPass !== newPassRetype)
       alert("Your retyped new password does not match");
     else ChangePassword({ old_password: oldPass, password: newPass });

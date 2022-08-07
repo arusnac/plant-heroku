@@ -70,7 +70,6 @@ const Account = (props) => {
                   console.log(err);
                   //reject(GetCognitoError(err.code + '_ChangePassword'));
                 } else {
-                  console.log(res);
                   resolve(res);
                 }
               }

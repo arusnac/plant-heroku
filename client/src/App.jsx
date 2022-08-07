@@ -51,7 +51,7 @@ const App = () => {
     const today = new Date()
     //get the userstate from local storage
     dispatch(toggleStatus(window.localStorage.getItem('userStatus')));
-    console.log('here ' + userStatus)
+
     let userName = ''
     if (user) {
       userName = user.username;
@@ -64,15 +64,12 @@ const App = () => {
       })
         .then((response) => {
           setPlantList(response.data.plants);
-          console.log(response.data.plants)
-          console.log(plantList);
+
         })
     } else {
       userName = '';
       console.log('error')
     }
-    console.log(userName)
-    console.log(plantList);
 
 
   }, [])
@@ -144,7 +141,6 @@ const App = () => {
         { username: user.username }
     }).then((response) => {
       setPlantList([...plantList, { name, location, watered, image: imagePath, _id: response.data._id }])
-      console.log(response.data, response.data._id);
       handleClose();
       handleClick('Plant Added!', 'success');
     });
@@ -153,7 +149,6 @@ const App = () => {
 
   const formatDate = (date) => {
     setValueDate(date);
-    console.log(date)
     const [year, month, day] = date.split('-')
     setWaterDate(`${month}/${day}/${year}`)
     

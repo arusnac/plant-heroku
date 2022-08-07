@@ -68,14 +68,12 @@ const PlantPage = () => {
   const username = user.username;
 
   useEffect(() => {
-    console.log(username.username, params.plantId);
     Axios.get(BASE_URL + "/user/plant", {
       params: {
         username: username,
         id: params.plantId,
       },
     }).then((response) => {
-      console.log(response.data);
       setPlant(response.data);
       setPlantName(response.data.name);
       setNoteList(response.data.notes);
@@ -96,7 +94,6 @@ const PlantPage = () => {
         if (noteList)
           setNoteList((noteList) => [...noteList, { noteTitle, noteBody }]);
         else setNoteList([{ noteTitle, noteBody }]);
-        console.log(noteList);
         setTitleValue(noteTitle);
         setNoteBodyValue(noteBody);
         handleClose(false);
@@ -116,7 +113,6 @@ const PlantPage = () => {
         },
       }
     ).then((response) => {
-      console.log(response);
       setPlantName(name);
       setValueLocation(location);
       handleCloseEdit(false);
@@ -253,14 +249,11 @@ const PlantPage = () => {
                       onChange={(event, newValue) => {
                         if (typeof newValue === "string") {
                           setValueLocation(newValue);
-                          console.log("first", valueLocation);
                         } else if (newValue && newValue.inputValue) {
                           // Create a new value from the user input
                           setValueLocation(newValue.location);
-                          console.log(typeof newValue);
                         } else {
                           setValueLocation(newValue.location);
-                          console.log("third", newValue);
                         }
                       }}
                       filterOptions={(options, params) => {

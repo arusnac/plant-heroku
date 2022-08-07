@@ -20,7 +20,6 @@ router.get("/plant", (req, res) => {
   let plantId = req.query.id;
   const result = UserModel.findOne({ userName: param }).then((doc) => {
     let plant = doc.plants.id(plantId);
-    console.log(doc);
     res.json(plant);
   });
 });
@@ -76,7 +75,6 @@ router.post("/edit", async (req, res) => {
   const name = req.body.name;
   const location = req.body.location;
   const plantId = req.body.id;
-  console.log(req.body);
 
   const result = await UserModel.findOne({ userName: param }).then((doc) => {
     let plant = doc.plants.id(plantId);
@@ -95,18 +93,16 @@ router.post("/note", async (req, res) => {
   const plantId = req.body.id;
   const toDo = req.body.toDo;
   const idx = req.body.idx;
-  console.log(req.body);
 
   const result = await UserModel.findOne({ userName: username }).then((doc) => {
     let plant = doc.plants.id(plantId);
-    console.log(`plant: ${plant}`);
+
     if (toDo === "add") {
       plant.notes.push({ noteTitle, noteBody });
       doc.save();
     } else if (toDo === "update") {
       doc.plants.id(plantId).notes[idx].noteTitle = noteTitle;
       doc.plants.id(plantId).notes[idx].noteBody = noteBody;
-      console.log(`UPDATED: ${plant.notes[idx].noteTitle}`);
       doc.save();
     }
   });
@@ -149,8 +145,6 @@ router.post("/delete", async (req, res) => {
   const plantId = req.body.id;
   const toDelete = req.body.toDelete;
   const noteIndex = req.body.idx;
-
-  console.log(noteIndex);
 
   if (toDelete === "plant") {
     const result = await UserModel.findOne({ userName: param }).then((doc) => {
