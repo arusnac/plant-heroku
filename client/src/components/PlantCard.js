@@ -12,10 +12,6 @@ import {
   TextField,
   CardActionArea,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import CancelIcon from "@mui/icons-material/Cancel";
-import InfoIcon from "@mui/icons-material/Info";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
@@ -28,8 +24,6 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import UploadImage from "../components/UploadImage";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import App from "../App";
-import { deletePlantCard } from "../App";
 
 const filter = createFilterOptions();
 const PlantCard = ({
@@ -245,9 +239,10 @@ const PlantCard = ({
         }}
       >
         <CardActionArea
-          onClick={() =>
-            navigate(`/plantpage/${id}`, { userName: userName, id: id })
-          }
+          onClick={() => {
+            console.log(id);
+            navigate(`/plantpage/${id}`, { userName: userName, id: id });
+          }}
         >
           <CardHeader
             sx={{ backgroundColor: "#fff" }}

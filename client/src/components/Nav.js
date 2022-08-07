@@ -18,8 +18,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
 import { AccountContext } from "./Account";
 
-const pages = ["FAQ", "About"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = ["About"];
+const settings = ["Account", "Logout"];
 
 const Nav = () => {
   let navigate = useNavigate();
@@ -30,7 +30,7 @@ const Nav = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const { logout, getUser } = React.useContext(AccountContext);
-
+  const user = getUser();
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -40,9 +40,9 @@ const Nav = () => {
   };
 
   const handleMenuItem = (selectedSetting) => {
-    if (selectedSetting === "Logout") {
-      logout();
-    }
+    if (selectedSetting === "Logout") logout();
+
+    if (selectedSetting === "Account") navigate(`/account`);
   };
 
   const handleCloseNavMenu = () => {
@@ -55,7 +55,6 @@ const Nav = () => {
 
   return (
     <>
-      {!userStatus && <Navigate to="login" />}
       <AppBar position="sticky" sx={{ backgroundColor: "#6c8c6f" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
@@ -128,7 +127,7 @@ const Nav = () => {
               variant="h5"
               noWrap
               component="a"
-              href=""
+              href="/"
               sx={{
                 mr: 2,
                 display: { xs: "flex", md: "none" },
@@ -142,6 +141,7 @@ const Nav = () => {
             >
               PLANTS!!
             </Typography>
+
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
                 <Button
@@ -154,38 +154,42 @@ const Nav = () => {
                 </Button>
               ))}
             </Box>
-
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="A" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Button onClick={() => handleMenuItem(setting)}>
-                      {setting}
-                    </Button>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
+            {user && (
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar
+                      alt={user.username[0]}
+                      src="/static/images/avatar/2.jpg"
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.map((setting) => (
+                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                      <Button onClick={() => handleMenuItem(setting)}>
+                        {setting}
+                      </Button>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+            )}
           </Toolbar>
         </Container>
       </AppBar>

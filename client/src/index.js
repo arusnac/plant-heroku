@@ -11,6 +11,8 @@ import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import PlantPage from "./components/PlantPage";
 import About from "./components/About";
+import UserAccount from "./components/UserAccount";
+import PrivateRoute from "./PrivateRoute/index";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -19,11 +21,33 @@ root.render(
       <Provider store={store}>
         <Account>
           <Routes>
-            <Route path="/" element={<App />} />
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <App />
+                </PrivateRoute>
+              }
+            />
             <Route path="login" element={<Login />} />
             <Route path="SignUp" element={<SignUp />} />
-            <Route path="plantpage/:plantId" element={<PlantPage />} />
+            <Route
+              path="plantpage/:plantId"
+              element={
+                <PrivateRoute>
+                  <PlantPage />
+                </PrivateRoute>
+              }
+            />
             <Route path="about" element={<About />} />
+            <Route
+              path="/account"
+              element={
+                <PrivateRoute>
+                  <UserAccount />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </Account>
       </Provider>

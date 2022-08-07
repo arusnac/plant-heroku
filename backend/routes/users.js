@@ -2,6 +2,7 @@ import express from "express";
 import UserModel from "../models/User.js";
 const router = express.Router();
 
+//return all the plants for this user
 router.get("/", (req, res) => {
   let param = req.query.username;
   UserModel.findOne({ userName: param }, (err, result) => {
@@ -13,27 +14,29 @@ router.get("/", (req, res) => {
   });
 });
 
-//return all the plants for this user
+//return a specific plant by id
 router.get("/plant", (req, res) => {
   let param = req.query.username;
   let plantId = req.query.id;
-  const result = UserModel.findOne({ username: param }).then((doc) => {
+  const result = UserModel.findOne({ userName: param }).then((doc) => {
     let plant = doc.plants.id(plantId);
+    console.log(doc);
     res.json(plant);
   });
 });
 
-//Add a new note to the plant notes array
+//Get all notes for a plant using it's id
 router.get("/notes", (req, res) => {
   const plantId = req.body.id;
   const user = req.body.id;
 
-  const result = UserModel.findOne({ username: param }).then((doc) => {
+  const result = UserModel.findOne({ userName: param }).then((doc) => {
     let plant = doc.plants.id(plantId);
     res.json(plant.notes);
   });
 });
 
+//Create a new user
 router.post("/new", async (req, res) => {
   const user = req.body;
   const newUser = new UserModel(user);
@@ -53,12 +56,13 @@ router.post("/update", async (req, res) => {
   res.json(result);
 });
 
+//Update the watered date based on plant id
 router.post("/water", async (req, res) => {
   let param = req.query.username;
   const watered = req.body.watered;
   const plantId = req.body.id;
 
-  const result = await UserModel.findOne({ username: param }).then((doc) => {
+  const result = await UserModel.findOne({ userName: param }).then((doc) => {
     let plant = doc.plants.id(plantId);
     plant.watered = watered;
     doc.save();
@@ -74,7 +78,7 @@ router.post("/edit", async (req, res) => {
   const plantId = req.body.id;
   console.log(req.body);
 
-  const result = await UserModel.findOne({ username: param }).then((doc) => {
+  const result = await UserModel.findOne({ userName: param }).then((doc) => {
     let plant = doc.plants.id(plantId);
     plant.name = name;
     plant.location = location;
@@ -93,7 +97,7 @@ router.post("/note", async (req, res) => {
   const idx = req.body.idx;
   console.log(req.body);
 
-  const result = await UserModel.findOne({ username: username }).then((doc) => {
+  const result = await UserModel.findOne({ userName: username }).then((doc) => {
     let plant = doc.plants.id(plantId);
     console.log(`plant: ${plant}`);
     if (toDo === "add") {
@@ -115,7 +119,7 @@ router.post("/editLocation", async (req, res) => {
   const location = req.body.location;
   const plantId = req.body.id;
 
-  const result = await UserModel.findOne({ username: param }).then((doc) => {
+  const result = await UserModel.findOne({ userName: param }).then((doc) => {
     let plant = doc.plants.id(plantId);
     plant.location = location;
     doc.save();
@@ -123,12 +127,13 @@ router.post("/editLocation", async (req, res) => {
   res.json(result);
 });
 
+//Change the images url for a specific plant
 router.post("/editImage", async (req, res) => {
   let param = req.query.username;
   const imagePath = req.body.imagePath;
   const plantId = req.body.id;
 
-  const result = await UserModel.findOne({ username: param }).then((doc) => {
+  const result = await UserModel.findOne({ userName: param }).then((doc) => {
     let plant = doc.plants.id(plantId);
     plant.image = imagePath;
     doc.save();
@@ -136,6 +141,9 @@ router.post("/editImage", async (req, res) => {
   res.json(result);
 });
 
+//Deletes the plant or note from the DB
+//Requires username, plant id, which type to delete
+//and the note index (if a note is to be deleted)
 router.post("/delete", async (req, res) => {
   const param = req.body.username;
   const plantId = req.body.id;
@@ -145,15 +153,14 @@ router.post("/delete", async (req, res) => {
   console.log(noteIndex);
 
   if (toDelete === "plant") {
-    const result = await UserModel.findOne({ username: param }).then((doc) => {
+    const result = await UserModel.findOne({ userName: param }).then((doc) => {
       const index = doc.plants.findIndex((element) => element.id === plantId);
       doc.plants.splice(index, 1);
       doc.save();
     });
     res.json(result);
   } else if (toDelete === "note") {
-    const result = await UserModel.findOne({ username: param }).then((doc) => {
-      // const index = doc.plants.findIndex((element) => element.id === plantId);
+    const result = await UserModel.findOne({ userName: param }).then((doc) => {
       doc.plants.id(plantId).notes.splice(noteIndex, 1);
       doc.save();
     });

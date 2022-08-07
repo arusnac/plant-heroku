@@ -8,7 +8,7 @@ import styles from './App.module.css'
 import UploadImage from './components/UploadImage'
 import { toggleStatus, setUsername } from './redux/UserSlice';
 import Button from '@mui/material/Button';
-import { Stack, Box, Modal, Snackbar, Alert, Typography  } from '@mui/material'
+import { Stack, Box, Modal, Snackbar, Alert, Typography, TextField  } from '@mui/material'
 import PlantCard from './components/PlantCard'
 import Nav from './components/Nav'
 import { Navigate } from "react-router-dom";
@@ -63,14 +63,16 @@ const App = () => {
       })
         .then((response) => {
           setPlantList(response.data.plants);
+          console.log(response.data.plants)
           console.log(plantList);
         })
     } else {
       userName = '';
       console.log('error')
     }
+    console.log(userName)
+    console.log(plantList);
 
-    console.log(plantList[0])
 
   }, [])
 
@@ -140,7 +142,8 @@ const App = () => {
       params:
         { username: user.username }
     }).then((response) => {
-      setPlantList([...plantList, { name, location, watered, image: imagePath, id: response._id }])
+      setPlantList([...plantList, { name, location, watered, image: imagePath, _id: response.data._id }])
+      console.log(response.data, response.data._id);
       handleClose();
       handleClick('Plant Added!', 'success');
     });
@@ -160,12 +163,16 @@ const App = () => {
 
   return (
     <>
-      {
-        !user
-          ? (<Navigate to='/login' replace={true} />)
-          : <div>
+      <Box sx={{height:'100%'}}>
             <Nav />
-            <Container>
+            
+            {!open &&
+                  <Box sx={{position:'fixed', marginBottom:{xs: '0', md: '40px'},  bottom:'0', right:'0', zIndex:'1'}}>
+                    < IconButton variant="contained" color="success" onClick={handleOpen}>
+                      <AddCircleIcon sx={{ fontSize: {md:60, xs: 42 } }} />
+                    </IconButton>
+                  </Box>}
+
               <div className="App">
                 <Snackbar
                   open={openSnack}
@@ -175,12 +182,7 @@ const App = () => {
                     {alertMessage}
                   </Alert>
                 </Snackbar>
-                {!open &&
-                  <Box bottom position='fixed' sx={{ bottom: 0, right: 0 }}>
-                    < IconButton variant="contained" color="success" onClick={handleOpen}>
-                      <AddCircleIcon sx={{ fontSize: 60 }} />
-                    </IconButton>
-                  </Box>}
+   
 
                 <Modal
                   open={open}
@@ -193,13 +195,17 @@ const App = () => {
                       direction="column"
                       justifyContent="center"
                       alignItems="center"
-                      spacing={1}
+                      textAlign='center'
+                      gap={5}
                     >
-
+                      <div>
+                      <Typography>Add A Plant</Typography>
                       <UploadImage />
-
-                      <input type='text' placeholder='name (required)' onChange={(event) => { setName(event.target.value) }} />
-                      <input type='text' placeholder='location (required)' onChange={(event) => { setLocation(event.target.value) }} />
+                      
+                      <TextField sx={{marginTop:'20px'}} type='text'  required  label='Plant Name (Required)' onChange={(event) => { setName(event.target.value) }} />
+                      <TextField  sx={{marginTop:'10px'}} type='text'  label='Location' onChange={(event) => { setLocation(event.target.value) }} />
+                      </div>
+                      <div>
                       <Typography variant='body1' color='text.primary'>Last Watered</Typography>
                       <Typography variant='body2' color='text.secondary'>If left blank, today's date will be used</Typography>
                      <input type="date" id="start" name="trip-start"
@@ -207,14 +213,19 @@ const App = () => {
                         max="2022-12-31" 
                         onChange={(e)=>{formatDate(e.target.value)}}>      
                       </input>
+                      </div>
                       {/* <Button onClick={(event)=>{showDate()}}>test</Button> */}
-                      <Button variant="contained" color="success" onClick={updatePlant}>Add</Button>
-                      <Button variant="contained" color="error" onClick={handleClose}>Cancel</Button>
+                      <div>
+                      <Button sx={{marginRight:'5px'}} variant="text" color="success" onClick={updatePlant}>Add</Button>
+                      <Button variant="text" color="error" onClick={handleClose}>Cancel</Button>
+                      </div>
                     </Stack>
                   </Box>
                 </Modal>
 
                 <div className={styles.plantContainer}>
+
+                  {!plantList.length > 0 && <Typography>Press the green plus icon to add plants</Typography>}
                   {plantList.map((plants) => {
                     return <PlantCard open={confirmationWindow} deletePlantCard={deletePlantCard} key={plants._id} id={plants._id} name={plants.name} image={plants.image} location={plants.location} watered={plants.watered} userName={user.username} />
                   })}
@@ -223,10 +234,12 @@ const App = () => {
 
               </div >
 
-            </Container >
-           < Footer/>
-          </div >
-      }
+
+
+            </Box>
+
+            < Footer/>
+      
     </>
   );
 }

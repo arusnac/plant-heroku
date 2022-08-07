@@ -1,6 +1,5 @@
 import { useContext, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import styles from "../App.module.css";
 import { AccountContext } from "./Account";
 import Axios from "axios";
 import Nav from "./Nav";
@@ -17,14 +16,13 @@ import {
   Typography,
   Box,
   Button,
-  CardActionArea,
   CardActions,
   TextField,
   Stack,
   Autocomplete,
   Modal,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+
 import Footer from "./Footer";
 const filter = createFilterOptions();
 
@@ -64,15 +62,18 @@ const PlantPage = () => {
   let params = useParams();
   const URL = "http://localhost:5000/user/plant";
   const { getUser } = useContext(AccountContext);
-  const username = getUser();
+  const user = getUser();
+  const username = user.username;
 
   useEffect(() => {
+    console.log(username.username, params.plantId);
     Axios.get(URL, {
       params: {
-        username: username.username,
+        username: username,
         id: params.plantId,
       },
     }).then((response) => {
+      console.log(response.data);
       setPlant(response.data);
       setPlantName(response.data.name);
       setNoteList(response.data.notes);
@@ -189,8 +190,9 @@ const PlantPage = () => {
 
   return (
     <>
-      <Nav />
-      <Box sx={{ height: "100vh" }}>
+      <Box sx={{ height: "100%" }}>
+        <Nav />
+
         <Box
           sx={{
             display: "flex",
@@ -402,7 +404,7 @@ const PlantPage = () => {
           </Card>
         </Box>
       </Box>
-
+      <Footer />
       <Modal
         open={open}
         onClose={handleClose}

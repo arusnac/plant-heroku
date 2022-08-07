@@ -2,7 +2,7 @@ import Nav from "./Nav";
 import Footer from "./Footer";
 import { Box } from "@mui/material";
 
-const Profile = () => {
+const Container = () => {
   return (
     <>
       <Box sx={{ height: "95vh" }}>
@@ -13,4 +13,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Container;
