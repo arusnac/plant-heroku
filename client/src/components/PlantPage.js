@@ -24,6 +24,8 @@ import {
 } from "@mui/material";
 
 import Footer from "./Footer";
+import { BASE_URL } from "../constants";
+
 const filter = createFilterOptions();
 
 const PlantPage = () => {
@@ -60,14 +62,14 @@ const PlantPage = () => {
   const [confimationWindow, setConfirmationWindow] = useState(false);
 
   let params = useParams();
-  const URL = "http://localhost:5000/user/plant";
+
   const { getUser } = useContext(AccountContext);
   const user = getUser();
   const username = user.username;
 
   useEffect(() => {
     console.log(username.username, params.plantId);
-    Axios.get(URL, {
+    Axios.get(BASE_URL + "/user/plant", {
       params: {
         username: username,
         id: params.plantId,
@@ -82,27 +84,30 @@ const PlantPage = () => {
   }, []);
 
   const saveNote = (noteTitle, noteBody) => {
-    Axios.post("http://localhost:5000/user/note", {
-      id: plant._id,
-      noteTitle,
-      noteBody,
-      username,
-      toDo: "add",
-    }).then((response) => {
-      if (noteList)
-        setNoteList((noteList) => [...noteList, { noteTitle, noteBody }]);
-      else setNoteList([{ noteTitle, noteBody }]);
-      console.log(noteList);
-      setTitleValue(noteTitle);
-      setNoteBodyValue(noteBody);
-      handleClose(false);
-    });
+    if (!noteBody.length > 0) alert("Please fill out the required field");
+    else {
+      Axios.post(BASE_URL + "/user/note", {
+        id: plant._id,
+        noteTitle,
+        noteBody,
+        username,
+        toDo: "add",
+      }).then((response) => {
+        if (noteList)
+          setNoteList((noteList) => [...noteList, { noteTitle, noteBody }]);
+        else setNoteList([{ noteTitle, noteBody }]);
+        console.log(noteList);
+        setTitleValue(noteTitle);
+        setNoteBodyValue(noteBody);
+        handleClose(false);
+      });
+    }
   };
 
   //Edit the plants name
   const editInfo = (name, location) => {
     Axios.post(
-      "http://localhost:5000/user/edit",
+      BASE_URL + "/user/edit",
       { id: plant._id, name: plantName, location: valueLocation },
       {
         params: {
@@ -121,7 +126,7 @@ const PlantPage = () => {
 
   //After confimation on the note deletion update noteList
   const deleteNoteConfirmation = (idx) => {
-    Axios.post("http://localhost:5000/user/delete", {
+    Axios.post(BASE_URL + "/user/delete", {
       username,
       idx,
       id: plant._id,
@@ -376,7 +381,7 @@ const PlantPage = () => {
                   Notes
                 </Typography>
               )}
-              {
+              {noteList.length > 0 &&
                 //Display the user added notes
                 noteList.map((note, index) => {
                   const key = Math.random();
@@ -387,13 +392,12 @@ const PlantPage = () => {
                       body={note.noteBody}
                       idx={index}
                       plantId={plant._id}
-                      username={username.username}
+                      username={user.username}
                       deleteNoteConfirmation={deleteNoteConfirmation}
                       saveNote={saveNote}
                     />
                   );
-                })
-              }
+                })}
             </CardContent>
 
             <CardActions sx={{ justifyContent: "space-between" }}>

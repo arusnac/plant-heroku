@@ -1,15 +1,12 @@
 import {
-  Autocomplete,
   Typography,
   CardActions,
   CardHeader,
-  Stack,
   Box,
   Card,
   CardContent,
   CardMedia,
   Modal,
-  TextField,
   CardActionArea,
 } from "@mui/material";
 import OpacityIcon from "@mui/icons-material/Opacity";
@@ -24,6 +21,8 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import UploadImage from "../components/UploadImage";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import "../constants";
+import { BASE_URL } from "../constants";
 
 const filter = createFilterOptions();
 const PlantCard = ({
@@ -74,7 +73,7 @@ const PlantCard = ({
     const watered = new Date().toLocaleDateString();
     const id = plantId;
     Axios.post(
-      "http://localhost:5000/user/water",
+      BASE_URL + "/user/water",
       { id: id, watered: watered },
       {
         params: {
@@ -91,7 +90,7 @@ const PlantCard = ({
   const editInfo = (plantId, name, location) => {
     const id = plantId;
     Axios.post(
-      "http://localhost:5000/user/edit",
+      BASE_URL + "/user/edit",
       { id: id, name: name, location: location },
       {
         params: {
@@ -110,7 +109,7 @@ const PlantCard = ({
   const editLocation = (plantId, location) => {
     const id = plantId;
     Axios.post(
-      "http://localhost:5000/user/editLocation",
+      BASE_URL + "/user/editLocation",
       { id: id, location: location },
       {
         params: {
@@ -129,7 +128,7 @@ const PlantCard = ({
   const editImage = (plantId, PATH) => {
     const id = plantId;
     Axios.post(
-      "http://localhost:5000/user/editImage",
+      BASE_URL + "/user/editImage",
       { id: id, imagePath: PATH },
       {
         params: {
@@ -145,7 +144,7 @@ const PlantCard = ({
 
   const deletePlant = () => {
     Axios.post(
-      "http://localhost:5000/user/delete",
+      BASE_URL + "/user/delete",
       { id: id },
       {
         params: {

@@ -4,8 +4,6 @@ import { AccountContext } from "./Account";
 import {
   Box,
   Typography,
-  styled,
-  Paper,
   Button,
   Accordion,
   AccordionSummary,
@@ -13,7 +11,7 @@ import {
   TextField,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 
 const style = {
   display: "flex",

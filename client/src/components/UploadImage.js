@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { uploadFile } from "react-s3";
 import axios from "axios";
-import { setImagePath, toggleStatus } from "../redux/UserSlice";
+import { setImagePath } from "../redux/UserSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import styles from "./UploadImage.module.css";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
+import "../constants";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { BASE_URL } from "../constants";
 
 async function postImage({ image, description }) {
   const formData = new FormData();
@@ -17,7 +18,7 @@ async function postImage({ image, description }) {
   formData.append("image", image);
   formData.append("description", description);
 
-  const result = await axios.post("http://localhost:5000/images", formData, {
+  const result = await axios.post(BASE_URL + "/images", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return result.data;
@@ -37,16 +38,12 @@ const UploadImageToS3WithReactS3 = ({ buttonType }) => {
     setFile(file);
     event.preventDefault();
     await postImage({ image: file, description }).then((response) => {
-      let path = "http://localhost:5000" + response.imagePath;
+      let path = BASE_URL + response.imagePath;
       setImagePath2(path);
       setImages([response.image, ...images]);
       dispatch(setImagePath(path));
     });
   };
-
-  useEffect(() => {
-    console.log(buttonType);
-  });
 
   const Input = styled("input")({
     display: "none",

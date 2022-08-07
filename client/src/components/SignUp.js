@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Axios from "axios";
+import { BASE_URL } from "../constants";
 
 function Copyright(props) {
   return (
@@ -33,7 +34,6 @@ function Copyright(props) {
 const theme = createTheme();
 
 const SignUp = () => {
-  const URL = "http://localhost:5000/user/";
   const onSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -53,9 +53,10 @@ const SignUp = () => {
           console.log(err);
         }
         console.log(data);
-        Axios.post(URL + "new", { userName: username, email: email }).then(
-          (response) => {}
-        );
+        Axios.post(BASE_URL + "/user/new", {
+          userName: username,
+          email: email,
+        }).then((response) => {});
       }
     );
   };

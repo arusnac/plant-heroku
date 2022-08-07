@@ -1,6 +1,7 @@
 import { Typography, Box, Button, Modal, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import Axios from "axios";
+import { BASE_URL } from "../constants";
 
 const Note = ({
   title,
@@ -36,11 +37,11 @@ const Note = ({
   const editNote = () => {
     setTitleValue(newTitleValue ? newTitleValue : titleValue);
     setNoteBodyValue(newNoteBodyValue ? newNoteBodyValue : noteBodyValue);
-    Axios.post("http://localhost:5000/user/note", {
+    Axios.post(BASE_URL + "/user/note", {
       id: plantId,
       noteTitle: newTitleValue ? newTitleValue : titleValue,
       noteBody: newNoteBodyValue ? newNoteBodyValue : noteBodyValue,
-      username,
+      username: username,
       toDo: "update",
       idx,
     }).then((response) => {
@@ -81,13 +82,15 @@ const Note = ({
         onMouseEnter={() => setDeleteNote(true)}
         onMouseLeave={() => setDeleteNote(false)}
       >
-        <Typography
-          variant="body1"
-          color="text.primary"
-          sx={{ paddingRight: "5px", fontWeight: 700 }}
-        >
-          {titleValue}:
-        </Typography>
+        {titleValue && (
+          <Typography
+            variant="body1"
+            color="text.primary"
+            sx={{ paddingRight: "5px", fontWeight: 700 }}
+          >
+            {titleValue}:
+          </Typography>
+        )}
         <Typography
           color="text.secondary"
           variant="body1"

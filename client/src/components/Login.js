@@ -21,8 +21,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Navigate, useNavigate } from "react-router-dom";
 import Nav from "./Nav";
 
-const theme = createTheme();
-
 const Login = () => {
   const [redirect, setRedirect] = useState(false);
 

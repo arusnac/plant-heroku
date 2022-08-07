@@ -15,10 +15,12 @@ import { Navigate } from "react-router-dom";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import IconButton from '@mui/material/IconButton';
 import Footer from './components/Footer'
+import './constants'
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { BASE_URL } from './constants';
 
 const App = () => {
   const [plantList, setPlantList] = useState([])
@@ -36,7 +38,6 @@ const App = () => {
   const [severity, setSeverity] = useState('');
 
   const [currentUser, setCurrentUser] = useState('');
-
   const { getUser } = useContext(AccountContext);
 
   const URL = 'http://localhost:5000/user/'
@@ -57,7 +58,7 @@ const App = () => {
       dispatch(setUsername(userName))
       setCurrentUser(userName)
       
-      Axios.get(URL, {
+      Axios.get( BASE_URL + '/user', {
         params:
           { username: userName }
       })
@@ -78,7 +79,7 @@ const App = () => {
 
   const deletePlantCard = (e) => {
     Axios.post(
-      "http://localhost:5000/user/delete",
+      BASE_URL + "/user/delete",
       { id: e.target.value, username: currentUser, toDelete: 'plant' },
     ).then((response) => {
       handleClick('Plant removed!', 'warning')
