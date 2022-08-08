@@ -134,7 +134,7 @@ const App = () => {
     else {
     let watered = waterDate.length > 0 ? waterDate : new Date().toLocaleDateString();
     let imagePath = PATH.imagePath;
-    Axios.post(URL + 'update', { name, location, watered: watered, image: imagePath }, {
+    Axios.post(BASE_URL + 'update', { name, location, watered: watered, image: imagePath }, {
       params:
         { username: user.username }
     }).then((response) => {
