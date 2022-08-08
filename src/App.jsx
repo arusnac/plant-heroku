@@ -178,6 +178,7 @@ const App = () => {
                 </Snackbar>
    
 
+
                 <Modal
                   open={open}
                   onClose={handleClose}
@@ -190,13 +191,13 @@ const App = () => {
                       justifyContent="center"
                       alignItems="center"
                       textAlign='center'
-                      gap={5}
+                      gap={3}
                     >
                       <div>
                       <Typography>Add A Plant</Typography>
                       <UploadImage />
                       
-                      <TextField sx={{marginTop:'20px'}} type='text'  required  label='Plant Name (Required)' onChange={(event) => { setName(event.target.value) }} />
+                      <TextField sx={{marginTop:'15px'}} type='text'  required  label='Plant Name (Required)' onChange={(event) => { setName(event.target.value) }} />
                       <TextField  sx={{marginTop:'10px'}} type='text'  label='Location' onChange={(event) => { setLocation(event.target.value) }} />
                       </div>
                       <div>
@@ -216,6 +217,7 @@ const App = () => {
                     </Stack>
                   </Box>
                 </Modal>
+
 
                 <div className={styles.plantContainer}>
 

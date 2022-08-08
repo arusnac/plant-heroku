@@ -92,8 +92,7 @@ const UploadImageToS3WithReactS3 = ({ buttonType }) => {
         <Box
           sx={{
             display: "flex",
-            width: 330,
-            height: 330,
+            width: { xs: 150, md: 250 },
             backgroundColor: "primary.dark",
           }}
         >
