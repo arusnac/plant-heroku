@@ -12,7 +12,8 @@ import PlantCard from './components/PlantCard'
 import Nav from './components/Nav'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import IconButton from '@mui/material/IconButton';
-import Footer from './components/Footer'
+import Footer from './components/Footer';
+import { setImagePath } from "./redux/UserSlice";
 import './constants'
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -134,12 +135,13 @@ const App = () => {
     else {
     let watered = waterDate.length > 0 ? waterDate : new Date().toLocaleDateString();
     let imagePath = PATH.imagePath;
-    Axios.post(BASE_URL + 'update', { name, location, watered: watered, image: imagePath }, {
+    Axios.post(BASE_URL + '/user/update', { name, location, watered: watered, image: imagePath }, {
       params:
         { username: user.username }
     }).then((response) => {
       setPlantList([...plantList, { name, location, watered, image: imagePath, _id: response.data._id }])
       handleClose();
+      dispatch(setImagePath(''));
       handleClick('Plant Added!', 'success');
     });
   }

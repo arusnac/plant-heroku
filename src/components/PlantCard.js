@@ -254,7 +254,11 @@ const PlantCard = ({
             alt="user plant"
             height="280"
             sx={{ marginRight: 5, width: "inherit", boxShadow: 2 }}
-            image={imagePath}
+            image={
+              imagePath
+                ? imagePath
+                : "https://dummyimage.com/345x345/696969/696969"
+            }
           />
 
           <CardContent>

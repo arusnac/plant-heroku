@@ -207,7 +207,7 @@ const PlantPage = () => {
             <CardMedia
               component="img"
               image={
-                plant.image !== "test"
+                plant.image !== "test" && plant.image !== ""
                   ? plant.image
                   : "https://dummyimage.com/345x345/696969/696969"
               }
