@@ -23,6 +23,7 @@ import Nav from "./Nav";
 
 const Login = () => {
   const [redirect, setRedirect] = useState(false);
+  const [loginError, setLoginError] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,12 +37,13 @@ const Login = () => {
     const password = data.get("password");
     authenticate(username, password)
       .then((data) => {
-        console.log("Logged in!", data);
         dispatch(toggleStatus(true));
         setRedirect(true);
+        setLoginError(false);
       })
       .catch((err) => {
         console.error("Failed to login", err);
+        setLoginError(true);
       });
   };
 
@@ -140,6 +142,10 @@ const Login = () => {
                   <TextField
                     margin="normal"
                     required
+                    error={loginError}
+                    helperText={
+                      loginError ? "Incorrect username or passord" : ""
+                    }
                     fullWidth
                     name="password"
                     label="Password"

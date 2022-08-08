@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from 'react';
 import Axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountContext } from './components/Account';
-import Container from 'react-bootstrap/Container';
 import styles from './App.module.css'
 import UploadImage from './components/UploadImage'
 import { toggleStatus, setUsername } from './redux/UserSlice';
@@ -11,7 +10,6 @@ import Button from '@mui/material/Button';
 import { Stack, Box, Modal, Snackbar, Alert, Typography, TextField  } from '@mui/material'
 import PlantCard from './components/PlantCard'
 import Nav from './components/Nav'
-import { Navigate } from "react-router-dom";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import IconButton from '@mui/material/IconButton';
 import Footer from './components/Footer'
