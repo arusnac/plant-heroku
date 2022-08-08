@@ -77,9 +77,9 @@ const About = () => {
                     On the homepage you can update watering (see more below),
                     upload a new image for any plant, or select the plant and
                     view the specific plant page. On the plant's page you can
-                    edit the plant'ss name, location, or add notes. To add notes
+                    edit the plant's name, location, or add notes. To add notes
                     simply click the Add Note button. Add a title (optional) and
-                    note. You can however over the notes to remove or edit them.
+                    note. You can hover over the notes to remove or edit them.
                   </Typography>
                 </div>
                 <div>
