@@ -16,7 +16,7 @@ const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = path.dirname(__filename);
 const app = express();
-const buildPath = path.join(__dirname, "..", "build");
+const buildPath = path.join(__dirname, "..", "/build");
 app.use(express.static(buildPath));
 app.use(express.json());
 // app.use(cors());
@@ -48,7 +48,13 @@ app.post("/images", upload.single("image"), async (req, res) => {
 
 app.use("/plants", plantRouter);
 app.use("/user", userRouter);
-
+app.get("/*", function (req, res) {
+  res.sendFile(path.join(__dirname, "../build/index.html"), function (err) {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
 app.listen(port, () => {
   console.log(`server running on ${port}`);
 });
