@@ -12,7 +12,7 @@ import PlantCard from './components/PlantCard'
 import Nav from './components/Nav'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import IconButton from '@mui/material/IconButton';
-import Footer from './components/Footer';
+import Footer from './components/Footer'
 import { setImagePath } from "./redux/UserSlice";
 import './constants'
 import '@fontsource/roboto/300.css';
@@ -50,13 +50,11 @@ const App = () => {
     const today = new Date()
     //get the userstate from local storage
     dispatch(toggleStatus(window.localStorage.getItem('userStatus')));
-
     let userName = ''
     if (user) {
       userName = user.username;
       dispatch(setUsername(userName))
       setCurrentUser(userName)
-      
       Axios.get( BASE_URL + '/user', {
         params:
           { username: userName }
@@ -141,21 +139,19 @@ const App = () => {
     }).then((response) => {
       setPlantList([...plantList, { name, location, watered, image: imagePath, _id: response.data._id }])
       handleClose();
+      //Clear the image path after the image has been sucessfully uploaded
       dispatch(setImagePath(''));
       handleClick('Plant Added!', 'success');
     });
   }
   };
 
+  //Convert the date from the date picker to match desired output
   const formatDate = (date) => {
     setValueDate(date);
     const [year, month, day] = date.split('-')
-    setWaterDate(`${month}/${day}/${year}`)
-    
-    
+    setWaterDate(`${month}/${day}/${year}`) 
   }
-
-
 
   return (
     <>
@@ -179,7 +175,6 @@ const App = () => {
                   </Alert>
                 </Snackbar>
    
-
 
                 <Modal
                   open={open}
@@ -219,7 +214,6 @@ const App = () => {
                     </Stack>
                   </Box>
                 </Modal>
-
 
                 <div className={styles.plantContainer}>
 

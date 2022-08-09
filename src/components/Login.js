@@ -37,6 +37,7 @@ const Login = () => {
     const password = data.get("password");
     authenticate(username, password)
       .then((data) => {
+        console.log("Logged in!", data);
         dispatch(toggleStatus(true));
         setRedirect(true);
         setLoginError(false);
@@ -52,6 +53,8 @@ const Login = () => {
       return <Navigate to="/" />;
     }
   };
+
+  const inputProps = { helperText: "error" };
 
   return (
     <>
@@ -97,7 +100,7 @@ const Login = () => {
                 Keep a digital collection of your plants, add notes, and track
                 your watering.
               </Typography>
-              <Typography>
+              <Typography mb={0}>
                 Sign in or register an account to start your collection.
               </Typography>
               <Button
